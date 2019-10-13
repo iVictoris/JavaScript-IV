@@ -152,26 +152,25 @@ class Hero extends Humanoid {
     this.damage = Math.floor(Math.random() * 5 * 15 + this.baseDamage);
     this.maxHealth = attr.healthPoints;
 
-  console.log(
-    `A Hero has been summoned onto the field with ${this.damage} damage and ${this.healthPoints} health`
-  );
-    
+    console.log(
+      `A Hero has been summoned onto the field with ${this.damage} damage and ${this.healthPoints} health`
+    );
   }
 }
 
-function Villain(attr) {
-  const damage = Math.floor(Math.random() * 2 * 15 + this.baseDamage);
-  Humanoid.call(this, attr);
-  this.damage = damage;
-  this.maxHealth = attr.healthPoints;
+class Villain extends Humanoid {
+  constructor(attr) {
+    super(attr);
+    this.damage = Math.floor(Math.random() * 2 * 15 + this.baseDamage);
+    this.maxHealth = attr.healthPoints;
+    this.healRatio = .25;
+    this.healFromDamage = Math.round(this.damage * this.healRatio);
+
   console.log(
     `A villan has been summoned onto the field with ${this.damage} damage and ${this.healthPoints} health`
   );
+  }
 }
-
-Hero.prototype = Object.create(Humanoid.prototype);
-Villain.prototype = Object.create(Humanoid.prototype);
-
 Hero.prototype.smite = function(villain) {
   console.log(`\n----- Hero Attacks ------`);
   villain.healthPoints -= this.damage;
