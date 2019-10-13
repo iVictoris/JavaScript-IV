@@ -27,7 +27,7 @@ Prototype Refactor
 */
 
 class GameObject {
-  constructor({createdAt, name, dimensions}) {
+  constructor({ createdAt, name, dimensions }) {
     this.createdAt = createdAt;
     this.name = name;
     this.dimensions = dimensions;
@@ -45,7 +45,7 @@ GameObject.prototype.destroy = function() {
 */
 
 class CharacterStats extends GameObject {
-  constructor({healthPoints, ...gameObjectAttributes}) {
+  constructor({ healthPoints, ...gameObjectAttributes }) {
     super(gameObjectAttributes);
     this.healthPoints = healthPoints;
   }
@@ -66,7 +66,7 @@ CharacterStats.prototype.takeDamage = function() {
 */
 
 class Humanoid extends CharacterStats {
-  constructor({team, weapons, language, ...characterStatsAttributes}) {
+  constructor({ team, weapons, language, ...characterStatsAttributes }) {
     super(characterStatsAttributes);
     this.team = team;
     this.weapons = weapons;
@@ -146,14 +146,17 @@ console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
 
 Humanoid.prototype.baseDamage = 75;
 
-function Hero(attr) {
-  Humanoid.call(this, attr);
-  const damage = Math.floor(Math.random() * 5 * 15 + this.baseDamage);
-  this.damage = damage;
-  this.maxHealth = attr.healthPoints;
+class Hero extends Humanoid {
+  constructor(attr) {
+    super(attr);
+    this.damage = Math.floor(Math.random() * 5 * 15 + this.baseDamage);
+    this.maxHealth = attr.healthPoints;
+
   console.log(
     `A Hero has been summoned onto the field with ${this.damage} damage and ${this.healthPoints} health`
   );
+    
+  }
 }
 
 function Villain(attr) {
@@ -170,20 +173,36 @@ Hero.prototype = Object.create(Humanoid.prototype);
 Villain.prototype = Object.create(Humanoid.prototype);
 
 Hero.prototype.smite = function(villain) {
-  console.log(`\n----- Hero Attacks ------`)
+  console.log(`\n----- Hero Attacks ------`);
   villain.healthPoints -= this.damage;
-  console.log(`${villain.name} has been smited by ${this.name} for ${this.damage}, health left: ${villain.healthPoints <= 0 ? 0 : villain.healthPoints}`)
+  console.log(
+    `${villain.name} has been smited by ${this.name} for ${
+      this.damage
+    }, health left: ${villain.healthPoints <= 0 ? 0 : villain.healthPoints}`
+  );
   console.log();
 };
 
 Villain.prototype.lifeSteal = function(hero) {
-  const healRatio = .25;
+  const healRatio = 0.25;
   const heal = this.damage * healRatio;
-  console.log(`\n----- Villain Attacks ------`)
+  console.log(`\n----- Villain Attacks ------`);
   hero.healthPoints -= this.damage;
-  this.healthPoints = this.healthPoints + heal >= this.maxHealth ? this.maxHealth : this.healthPoints + heal; 
-  console.log(`${hero.name} has gotten their life stolen for ${this.damage}. health left: ${hero.healthPoints <= 0 ? 0 : hero.healthPoints}`);
-  console.log(`${this.name} restored ${healRatio * 100}%(${heal}) of the damage dealt, bringing their health to ${this.healthPoints}`)
+  this.healthPoints =
+    this.healthPoints + heal >= this.maxHealth
+      ? this.maxHealth
+      : this.healthPoints + heal;
+  console.log(
+    `${hero.name} has gotten their life stolen for ${
+      this.damage
+    }. health left: ${hero.healthPoints <= 0 ? 0 : hero.healthPoints}`
+  );
+  console.log(
+    `${this.name} restored ${healRatio *
+      100}%(${heal}) of the damage dealt, bringing their health to ${
+      this.healthPoints
+    }`
+  );
   console.log();
 };
 
@@ -199,7 +218,7 @@ const archerHero = new Hero({
   team: "Forest Kingdom",
   weapons: ["Bow", "Dagger"],
   language: "Elvish",
-  side: "Hero",
+  side: "Hero"
 });
 
 const mageVillain = new Villain({
@@ -214,7 +233,7 @@ const mageVillain = new Villain({
   team: "Mage Guild",
   weapons: ["Staff of Shamalama"],
   language: "Common Tongue",
-  side: "Villain",
+  side: "Villain"
 });
 
 const coinflip = Math.floor(Math.random * 2);
@@ -244,22 +263,22 @@ if (coinflip) {
 }
 
 let heroHp = archerHero.healthPoints,
-villainHp = mageVillain.healthPoints;
+  villainHp = mageVillain.healthPoints;
 
 while (heroHp > 0 && villainHp > 0) {
-mageVillain.lifeSteal(archerHero);
-if (archerHero.healthPoints <= 0) {
-  console.log(archerHero.destroy());
-  return;
-}
+  mageVillain.lifeSteal(archerHero);
+  if (archerHero.healthPoints <= 0) {
+    console.log(archerHero.destroy());
+    return;
+  }
 
-heroHp = archerHero.healthPoints;
+  heroHp = archerHero.healthPoints;
 
-archerHero.smite(mageVillain);
-if (mageVillain.healthPoints <= 0) {
-  console.log(mageVillain.destroy());
-  return;
-}
+  archerHero.smite(mageVillain);
+  if (mageVillain.healthPoints <= 0) {
+    console.log(mageVillain.destroy());
+    return;
+  }
 
-villainHp = mageVillain.healthPoints;
+  villainHp = mageVillain.healthPoints;
 }
