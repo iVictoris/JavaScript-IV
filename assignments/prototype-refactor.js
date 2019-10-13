@@ -163,12 +163,12 @@ class Villain extends Humanoid {
     super(attr);
     this.damage = Math.floor(Math.random() * 2 * 15 + this.baseDamage);
     this.maxHealth = attr.healthPoints;
-    this.healRatio = .25;
+    this.healRatio = 0.25;
     this.healFromDamage = Math.round(this.damage * this.healRatio);
 
-  console.log(
-    `A villan has been summoned onto the field with ${this.damage} damage and ${this.healthPoints} health`
-  );
+    console.log(
+      `A villan has been summoned onto the field with ${this.damage} damage and ${this.healthPoints} health`
+    );
   }
 }
 Hero.prototype.smite = function(villain) {
@@ -183,24 +183,21 @@ Hero.prototype.smite = function(villain) {
 };
 
 Villain.prototype.lifeSteal = function(hero) {
-  const healRatio = 0.25;
-  const heal = this.damage * healRatio;
   console.log(`\n----- Villain Attacks ------`);
   hero.healthPoints -= this.damage;
   this.healthPoints =
-    this.healthPoints + heal >= this.maxHealth
+    this.healthPoints + this.healFromDamage >= this.maxHealth
       ? this.maxHealth
-      : this.healthPoints + heal;
+      : this.healthPoints + this.healFromDamage;
   console.log(
     `${hero.name} has gotten their life stolen for ${
       this.damage
     }. health left: ${hero.healthPoints <= 0 ? 0 : hero.healthPoints}`
   );
   console.log(
-    `${this.name} restored ${healRatio *
-      100}%(${heal}) of the damage dealt, bringing their health to ${
-      this.healthPoints
-    }`
+    `${this.name} restored ${this.healRatio * 100}%(${
+      this.healFromDamage
+    }) of the damage dealt, bringing their health to ${this.healthPoints}`
   );
   console.log();
 };
