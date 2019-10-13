@@ -65,14 +65,15 @@ CharacterStats.prototype.takeDamage = function() {
   * should inherit takeDamage() from CharacterStats
 */
 
-function Humanoid({ team, weapons, language, ...characterStats }) {
-  CharacterStats.call(this, characterStats);
-  this.team = team;
-  this.weapons = weapons;
-  this.language = language;
+class Humanoid extends CharacterStats {
+  constructor({team, weapons, language, ...characterStatsAttributes}) {
+    super(characterStatsAttributes);
+    this.team = team;
+    this.weapons = weapons;
+    this.language = language;
+  }
 }
 
-Humanoid.prototype = Object.create(CharacterStats.prototype);
 Humanoid.prototype.greet = function() {
   return `${this.name} offers a greeting in ${this.language}`;
 };
